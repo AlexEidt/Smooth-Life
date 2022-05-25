@@ -15,11 +15,11 @@ import imageio as io
 from tqdm import trange
 
 
-OUTPUT = 'smoothlife.gif'
-
-W = 1920 // 4
-H = 1080 // 4
-GENERATIONS = 1200
+OUTPUT = 'smoothlife.mp4'
+FPS = 30
+W = 1920 // 2
+H = 1080 // 2
+GENERATIONS = 30 * 60 * 2
 
 DT = 0.30
 OUTER_RADIUS = 10
@@ -32,32 +32,6 @@ D2 = 0.549
 
 ALPHA_N = 0.028
 ALPHA_M = 0.147
-
-PARSE_ARGS = True
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description='Smooth Life: A Continuous Cellular Automaton')
-
-    parser.add_argument("output", help="File name of the output video.")
-
-    parser.add_argument("-w", "--width", type=int, default=W, help="Width of the output video.")
-    parser.add_argument("-h", "--height", type=int, default=H, help="Height of the output video.")
-    parser.add_argument("-g", "--generations", type=int, default=GENERATIONS, help="Number of generations to simulate.")
-    parser.add_argument("-dt", "--dt", type=float, default=DT, help="Time step of the simulation.")
-    parser.add_argument("-or", "--outer-radius", type=int, default=OUTER_RADIUS, help="Radius of the outer disk.")
-    parser.add_argument("-ir", "--inner-radius", type=int, default=INNER_RADIUS, help="Radius of the inner disk.")
-    parser.add_argument("-b1", "--b1", type=float, default=B1, help="Beginning threshold of birth interval")
-    parser.add_argument("-b2", "--b2", type=float, default=B2, help="End threshold of birth interval")
-    parser.add_argument("-d1", "--d1", type=float, default=D1, help="Beginning threshold of death interval")
-    parser.add_argument("-d2", "--d2", type=float, default=D2, help="End threshold of death interval")
-    parser.add_argument("-an", "--alpha-n", type=float, default=ALPHA_N, help="Birth Interval blending.")
-    parser.add_argument("-am", "--alpha-m", type=float, default=ALPHA_M, help="Death Interval blending.")
-
-    parser.add_argument("-fps", "--fps", type=int, default=30, help="Frames per second of the output video.")
-    parser.add_argument("-sv", "--save-frames", action="store_true", help="Save individual frames as images.")
-
-    return parser.parse_args()
 
 
 def sigmoid(x, a, b, buffer):
@@ -111,9 +85,9 @@ def main():
     cx = np.empty_like(current)
     cy = np.empty_like(current)
 
-    with io.save(OUTPUT, fps=30) as writer:
+    with io.save(OUTPUT, fps=FPS) as writer:
         frame_buffer = np.empty((H, W), dtype=np.uint8)
-        for g in trange(GENERATIONS):
+        for _ in trange(GENERATIONS):
             current_fft = np.fft.fft2(current)
 
             np.multiply(current_fft, kernel_cx, out=cx)
