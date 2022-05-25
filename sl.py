@@ -105,8 +105,7 @@ def main():
 
             current, next = next, current
 
-            current_real = current.real
-            ne.evaluate('current_real * 255', out=frame_buffer, casting='unsafe')
+            ne.evaluate('current.real * 255', out=frame_buffer, casting='unsafe')
 
             writer.append_data(frame_buffer)
 
