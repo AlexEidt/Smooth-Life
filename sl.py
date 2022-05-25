@@ -8,7 +8,6 @@ This implementation was adapted from an opengl shaders implementation by user "c
 on shadertoy.com. https://www.shadertoy.com/view/XtdSDn#
 """
 
-import argparse
 import numexpr as ne
 import numpy as np
 import imageio as io
@@ -19,7 +18,7 @@ OUTPUT = 'smoothlife.mp4'
 FPS = 30
 W = 1920 // 2
 H = 1080 // 2
-GENERATIONS = 30 * 60 * 2
+GENERATIONS = FPS * 60 * 2
 
 DT = 0.30
 OUTER_RADIUS = 10
@@ -90,14 +89,14 @@ def main():
         for _ in trange(GENERATIONS):
             current_fft = np.fft.fft2(current)
 
-            np.multiply(current_fft, kernel_cx, out=cx)
-            np.multiply(current_fft, kernel_cy, out=cy)
+            ne.evaluate('current_fft * kernel_cx', out=cx)
+            ne.evaluate('current_fft * kernel_cy', out=cy)
 
             cxr = np.fft.ifft2(cx).real
             cyr = np.fft.ifft2(cy).real
 
-            cxr /= outer_area
-            cyr /= inner_area
+            ne.evaluate('cxr / outer_area', out=cxr)
+            ne.evaluate('cyr / inner_area', out=cyr)
 
             dt = DT
             smoothlife(cxr, cyr, buffer1, buffer2, buffer3)
@@ -106,7 +105,9 @@ def main():
 
             current, next = next, current
 
-            np.multiply(current.real, 255, out=frame_buffer, casting='unsafe')
+            current_real = current.real
+            ne.evaluate('current_real * 255', out=frame_buffer, casting='unsafe')
+
             writer.append_data(frame_buffer)
 
 
