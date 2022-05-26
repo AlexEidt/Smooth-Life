@@ -8,8 +8,8 @@ This implementation was adapted from an opengl shaders implementation by user "c
 on shadertoy.com. https://www.shadertoy.com/view/XtdSDn#
 """
 
-import numexpr as ne
 import numpy as np
+import numexpr as ne
 import imageio as io
 from tqdm import trange
 
