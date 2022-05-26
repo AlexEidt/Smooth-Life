@@ -56,8 +56,8 @@ def create_kernels():
     # the next generation of the cellular automaton. Done via fft convolution.
     kernelx = np.zeros((H, W), dtype=np.complex128)
     kernely = np.zeros((H, W), dtype=np.complex128)
-    for y in range(-OUTER_RADIUS, OUTER_RADIUS+1):
-        for x in range(-OUTER_RADIUS, OUTER_RADIUS+1):
+    for y in range(-OUTER_RADIUS, OUTER_RADIUS + 1):
+        for x in range(-OUTER_RADIUS, OUTER_RADIUS + 1):
             dist = np.sqrt(x * x + y * y)
             inner_dist = np.clip(dist - INNER_RADIUS + 0.5, 0, 1)
             kernelx[y % H, x % W] = inner_dist * (1 - np.clip(dist - OUTER_RADIUS + 0.5, 0, 1))
